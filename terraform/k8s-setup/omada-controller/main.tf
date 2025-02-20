@@ -207,9 +207,6 @@ resource "kubernetes_stateful_set_v1" "omada" {
 }
 
 resource "kubernetes_service_v1" "omada_controller" {
-  lifecycle {
-    ignore_changes = [ metadata.0.annotations ]
-  }
   metadata {
     name = "omada-controller"
     namespace = kubernetes_namespace_v1.omada_controller.metadata.0.name

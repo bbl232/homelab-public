@@ -133,9 +133,6 @@ resource "kubernetes_stateful_set_v1" "wireguard" {
 }
 
 resource "kubernetes_service_v1" "wireguard" {
-  lifecycle {
-    ignore_changes = [ metadata.0.annotations ]
-  }
   metadata {
     name = "wireguard"
     namespace = kubernetes_namespace_v1.wireguard.metadata.0.name
