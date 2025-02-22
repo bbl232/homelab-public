@@ -38,6 +38,7 @@ resource "random_password" "client_id" {
 
 resource "random_password" "client_secret" {
   length = 40
+  special = var.client_secret_special
 }
 
 resource "authentik_provider_oauth2" "app" {

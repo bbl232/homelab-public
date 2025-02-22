@@ -37,6 +37,12 @@ variable "client_secret" {
   description = "Client Secret to use for this provider. (Optional)"
 }
 
+variable "client_secret_special" {
+  type = bool
+  default = true
+  description = "Set to false to disable special characters in the client secret. (Optional)"
+}
+
 variable "client_type" {
   type = string
   default = "confidential"

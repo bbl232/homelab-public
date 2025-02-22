@@ -13,7 +13,10 @@ terraform {
 
 provider "kubernetes" {
   config_path = "~/.kube/config"
-  ignore_annotations = ["metallb\\.universe\\.tf\\/ip-allocated-from-pool"]
+  ignore_annotations = [
+    "metallb\\.universe\\.tf\\/ip-allocated-from-pool",
+    "kubectl\\.kubernetes\\.io\\/restartedAt"
+  ]
 }
 
 provider "authentik" {

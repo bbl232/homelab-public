@@ -92,6 +92,7 @@ module "proxmox" {
   app_name = "Proxmox"
   app_slug = "proxmox"
   client_id = "proxmox"
+  client_secret_special = false
   app_launch_url = "https://proxmox.billv.ca"
   app_icon = "https://camo.githubusercontent.com/4e9e0bf3fcd09d6557b4eaa8f790ec17599ed6e8eb37a7e78adaa30650c8a6e3/68747470733a2f2f7777772e70726f786d6f782e636f6d2f696d616765732f70726f786d6f782f50726f786d6f785f73796d626f6c5f7374616e646172645f6865782e706e67"
   allowed_redirect_uris = [{
