@@ -3,6 +3,11 @@ output "bill_pw" {
   sensitive = true
 }
 
+output "trina_pw" {
+  value = random_password.trina_pw.result
+  sensitive = true
+}
+
 output "proxmox_client_secret" {
   value = module.proxmox.client_secret
   sensitive = true

@@ -12,6 +12,11 @@ output "bill_pw" {
   sensitive = true
 }
 
+output "trina_pw" {
+  value = module.authentik.trina_pw
+  sensitive = true
+}
+
 output "proxmox_client_secret" {
   value = module.authentik.proxmox_client_secret
   sensitive = true

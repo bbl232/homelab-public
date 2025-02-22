@@ -81,6 +81,21 @@ resource "kubernetes_manifest" "certificate_authentik_star_billv_ca" {
   }
 }
 
+resource "kubernetes_manifest" "middleware_admin" {
+  manifest = {
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind" = "Middleware"
+    "metadata" = {
+      "name" = "add-admin"
+      "namespace" = "pihole-system"
+    }
+    "spec" = {
+      "addPrefix" = {
+        "prefix" = "/admin"
+      }
+    }
+  }
+}
 
 resource "kubernetes_manifest" "ingressroute" {
   manifest = {

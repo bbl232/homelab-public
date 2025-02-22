@@ -25,13 +25,13 @@ role_assignment:
         role_claim: groups
         role_mapping:
             - role_name: admin
-              claim_value: Ocis_Admins
+              claim_value: ocis_Admins
             - role_name: spaceadmin
-              claim_value: Ocis_Space_Admins
+              claim_value: ocis_Space_Admins
             - role_name: user
-              claim_value: Ocis_Users
+              claim_value: ocis_Users
             - role_name: guest
-              claim_value: Ocis_Guests
+              claim_value: ocis_Guests
 role_quotas:
   71881883-1768-46bd-a24d-a356a2afdf7f: 10000000000
   d7beeea8-8ff4-406b-8fb6-ab2dd81e6b11: 5000000000

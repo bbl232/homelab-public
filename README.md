@@ -114,7 +114,7 @@ A web user interface to manage your WireGuard setup.
 |FIBRE IN| > |ONT|       + > [vlan1 - LAN]
 +--------+   +---+       |
                \/        + > [vlan2 - Main Wifi] > - - +--------------+
-         +----------+    |                             |🛜 EAP-650(x3)|
+         +----------+    |                            |🛜 EAP-650(x3)|
          |🌐 Pfsense|    + > [vlan3 - IOT Wifi] >  - - +--------------+
          +----------+    |                    +------------------------------+
                \/        + > [vlan4 - lab] >  |📢 Proxmox Cluster 2.5G switch|
