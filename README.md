@@ -23,14 +23,14 @@ pfSense is a free and open source firewall and router that also features unified
     - 256GB NVME
     - [1TB SATA III SSD](https://www.amazon.ca/dp/B09WMP5B5N)
     - 1Gbe on board - Used for AMT
-    - [2.5Gbe m.2 NIC](https://www.aliexpress.com/item/1005007273213520.html)
+    - [2.5Gbe m.2 NIC](https://www.aliexpress.com/item/1005007273213520.html) - [3d model to add nic](https://www.thingiverse.com/thing:6899748)
 - 1x [HP Elitedesk 800 G3 Minis (65W)](https://support.hp.com/lt-en/product/details/hp-elitedesk-800-65w-g3-desktop-mini-pc/15497277) - [Microcad.ca $94](https://www.microcad.ca/collections/refurbished-desktops)
     - Intel® Core™ i5-6500 CPU @ 3.20GHz
     - 16GB DDR4
     - 256GB NVME
     - [1TB SATA III SSD](https://www.amazon.ca/dp/B09WMP5B5N)
     - 1Gbe on board - Used for AMT
-    - [2.5Gbe m.2 NIC](https://www.aliexpress.com/item/1005007273213520.html)
+    - [2.5Gbe m.2 NIC](https://www.aliexpress.com/item/1005007273213520.html) - [3d model to add nic](https://www.thingiverse.com/thing:6899748)
 ### Power
 - [APC Back-UPS ES 350VA](https://www.apc.com/ca/en/product/BE350G-CN/apc-backups-es-350va-120v-without-autoshutdown-software/)
 ## Software
