@@ -28,7 +28,7 @@ resource "helm_release" "pihole" {
 admin:
   enabled: false
 
-replicaCount: 2
+replicaCount: 1
 serviceWeb:
   https:
     enabled: false
@@ -43,7 +43,10 @@ serviceDhcp:
   enabled: false
 
 persistentVolumeClaim:
-  enabled: false
+  enabled: true
+  storageClass: longhorn
+
+maxUnavailable: 0
 
 dnsmasq:
   customDnsEntries:
@@ -97,6 +100,27 @@ resource "kubernetes_manifest" "middleware_admin" {
   }
 }
 
+resource "kubernetes_manifest" "middleware_ipallowlist" {
+  manifest = {
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind" = "Middleware"
+    "metadata" = {
+      "name" = "allowlist"
+      "namespace" = "pihole-system"
+    }
+    "spec" = {
+      "ipAllowList" = {
+        "ipStrategy" = {
+          "depth" = 1
+        }
+        "sourceRange" = [
+          "10.206.2.7/32"
+        ]
+      }
+    }
+  }
+}
+
 resource "kubernetes_manifest" "ingressroute" {
   manifest = {
     "apiVersion" = "traefik.containo.us/v1alpha1"
@@ -125,6 +149,57 @@ resource "kubernetes_manifest" "ingressroute" {
       }]
       "tls" = {
         "secretName" = "pihole-billv-ca"
+      }
+    }
+  }
+}
+
+resource "kubernetes_manifest" "certificate_piholeassistant_billv_ca" {
+  manifest = {
+    "apiVersion" = "cert-manager.io/v1"
+    "kind" = "Certificate"
+    "metadata" = {
+      "name" = "piholeassistant-billv-ca"
+      "namespace" = "pihole-system"
+    }
+    "spec" = {
+      "dnsNames" = [
+        "piholeassistant.billv.ca",
+      ]
+      "issuerRef" = {
+        "kind" = "ClusterIssuer"
+        "name" = "letsencrypt"
+      }
+      "secretName" = "piholeassistant-billv-ca"
+    }
+  }
+}
+
+resource "kubernetes_manifest" "assistant_ingressroute" {
+  manifest = {
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind" = "IngressRoute"
+    "metadata" = {
+      "name" = "piholeassistant"
+      "namespace" = "pihole-system"
+    }
+    "spec" = {
+      "entryPoints" = ["websecure"]
+      "routes" = [{
+        "kind" = "Rule"
+        "match" = "Host(`piholeassistant.billv.ca`)"
+        "middlewares" = [{
+          "name" = "allowlist"
+          "namespace" = "pihole-system"
+        }]
+        "services" = [{
+          "kind" = "Service"
+          "name" = "pihole-web"
+          "port" = 80
+        }]
+      }]
+      "tls" = {
+        "secretName" = "piholeassistant-billv-ca"
       }
     }
   }

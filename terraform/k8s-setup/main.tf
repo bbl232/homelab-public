@@ -8,7 +8,10 @@ terraform {
 
 provider "kubernetes" {
     config_path    = "~/.kube/config"
-    ignore_annotations = ["metallb\\.universe\\.tf\\/ip\\-allocated\\-from\\-pool"]
+    ignore_annotations = [
+      "metallb\\.universe\\.tf\\/ip\\-allocated\\-from\\-pool",
+      "kubectl\\.kubernetes\\.io\\/restartedAt"
+    ]
 }
 
 provider "helm" {
@@ -47,6 +50,10 @@ module "omada_controller" {
 
 module "dashboard" {
   source = "./dashboard-system"
+}
+
+module "traefik_config" {
+  source = "./traefik-config"
 }
 
 resource "kubernetes_service_account_v1" "bill" {
