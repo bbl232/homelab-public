@@ -40,7 +40,7 @@ resource "helm_release" "authentik" {
   name = "authentik"
   repository = "https://charts.goauthentik.io"
   chart = "authentik"
-  version = "2024.12.3"
+  version = "2025.2.1"
   namespace = "authentik"
   create_namespace = true
   values = [
@@ -51,6 +51,15 @@ authentik:
         enabled: true
     postgresql:
         password: ${random_password.postgresql_password.result}
+    email:
+      host: "smtp.zoho.com"
+      port: 465
+      username: "bill@vandenberk.me"
+      password: "${data.aws_ssm_parameter.smtp.value}"
+      use_tls: false
+      use_ssl: true
+      timeout: 10
+      from: "Authentik <bill@vandenberk.me>"
 
 server:
     ingress:
@@ -69,22 +78,7 @@ redis:
       persistence:
         storageClass: longhorn
 
-email:
-    # -- SMTP Server emails are sent from, fully optional
-    host: "smtp.zoho.com"
-    port: 465
-    # -- SMTP credentials. When left empty, no authentication will be done.
-    username: "bill@vandenberk.me"
-    # -- SMTP credentials. When left empty, no authentication will be done.
-    password: "${data.aws_ssm_parameter.smtp.value}"
-    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
-    use_tls: false
-    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
-    use_ssl: true
-    # -- Connection timeout in seconds
-    timeout: 10
-    # -- Email 'from' address can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
-    from: "bill@vandenberk.me"
+
 worker:
     env:
         - name: AUTHENTIK_BOOTSTRAP_PASSWORD

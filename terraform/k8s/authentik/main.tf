@@ -247,6 +247,26 @@ module "wireguard" {
   outpost_name = local.traefik_outpost_name
 }
 
+module "zoho" {
+  source = "./modules/saml_bundle"
+  app_group = "Cloud Services"
+  app_name = "Zoho"
+  app_slug = "zoho"
+  audience = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+  acs_url = "https://accounts.zoho.com/signin/samlsp/50808682"
+  app_launch_url = "https://accounts.zohocloud.ca/signin"
+  app_icon = "https://www.zohowebstatic.com/sites/zweb/images/commonroot/zoho-logo.svg"
+  property_mappings = [
+    "goauthentik.io/providers/saml/email",
+    "goauthentik.io/providers/saml/name",
+    "goauthentik.io/providers/saml/upn",
+    "goauthentik.io/providers/saml/groups",
+    "goauthentik.io/providers/saml/ms-windowsaccountname",
+    "goauthentik.io/providers/saml/username",
+    "goauthentik.io/providers/saml/uid"
+  ]
+}
+
 resource "authentik_user" "bill" {
   username = "bill"
   email = "bill@vandenberk.me"
@@ -257,6 +277,7 @@ resource "authentik_user" "bill" {
   password = random_password.bill_pw.result
   groups = [data.authentik_group.admins.id,
             module.aws.admins_group_id,
+            module.zoho.users_group_id,
             module.proxmox.users_group_id, 
             module.pihole.access_group_id,
             module.longhorn.access_group_id,
@@ -321,4 +342,104 @@ resource "authentik_outpost" "traefik" {
     module.longhorn.provider_id
   ]
   service_connection = authentik_service_connection_kubernetes.local.id
+}
+
+
+resource "authentik_brand" "default" {
+  domain         = "authentik-default"
+  default        = true
+  branding_title = "authentik"
+  branding_favicon = "/static/dist/assets/icons/icon.png"
+  branding_logo = "/static/dist/assets/icons/icon_left_brand.svg"
+  flow_recovery = authentik_flow.reset.uuid
+}
+
+resource "authentik_flow" "reset" {
+  name = "Default recovery flow"
+  authentication = "require_unauthenticated"
+  slug = "default-recovery-flow"
+  title = "Reset your password"
+  designation = "recovery"
+}
+
+resource "authentik_stage_prompt_field" "password" {
+  field_key = "password"
+  label     = "Password"
+  type      = "password"
+  name      = "default-recovery-field-password"
+}
+
+resource "authentik_stage_prompt_field" "password_repeat" {
+  field_key = "password_repeat"
+  label     = "Password (repeat)"
+  type      = "password"
+  name      = "default-recovery-field-password-repeat"
+}
+
+resource "authentik_policy_expression" "expressionpolicy" {
+  name = "default-recovery-skip-if-restored"
+  expression = "return bool(request.context.get('is_restored', True))"
+}
+
+resource "authentik_stage_user_login" "login_stage" {
+  name = "default-recovery-user-login"
+}
+
+resource "authentik_stage_user_write" "user_write_stage" {
+  name = "default-recovery-user-write"
+}
+
+resource "authentik_stage_identification" "identification_stage" {
+  name = "default-recovery-authentication"
+  user_fields = ["email", "username"]
+  case_insensitive_matching = true
+}
+
+resource "authentik_stage_email" "email_stage" {
+  name = "default-recovery-email"
+  activate_user_on_success = true
+}
+
+resource "authentik_stage_prompt" "password_prompt" { 
+  name = "Change your password"
+  fields = [
+    resource.authentik_stage_prompt_field.password.id,
+    resource.authentik_stage_prompt_field.password_repeat.id
+  ]
+}
+
+resource "authentik_flow_stage_binding" "stage_binding_10" {
+  order = 10
+  stage = authentik_stage_identification.identification_stage.id
+  target = authentik_flow.reset.uuid
+}
+
+resource "authentik_flow_stage_binding" "stage_binding_20" {
+  order = 20
+  stage = authentik_stage_email.email_stage.id
+  target = authentik_flow.reset.uuid
+}
+
+resource "authentik_flow_stage_binding" "stage_binding_30" {
+  order = 30
+  stage = authentik_stage_prompt.password_prompt.id
+  target = authentik_flow.reset.uuid
+}
+
+resource "authentik_flow_stage_binding" "stage_binding_40" {
+  order = 40
+  stage = authentik_stage_user_write.user_write_stage.id
+  target = authentik_flow.reset.uuid
+}
+
+resource "authentik_flow_stage_binding" "stage_binding_100" {
+  order = 100
+  stage = authentik_stage_user_login.login_stage.id
+  target = authentik_flow.reset.uuid
+}
+
+resource "authentik_policy_binding" "policy_binding" {
+  order = 0
+  target = authentik_flow.reset.uuid
+  policy = authentik_policy_expression.expressionpolicy.id
 }
