@@ -20,7 +20,7 @@ resource "helm_release" "pihole" {
   name = "pihole"
   repository = "https://mojo2600.github.io/pihole-kubernetes/"
   chart = "pihole"
-  version = "2.26.2"
+  version = "2.29.1"
   namespace = "pihole-system"
   create_namespace = true
   values = [
@@ -28,7 +28,7 @@ resource "helm_release" "pihole" {
 admin:
   enabled: false
 
-replicaCount: 1
+replicaCount: 2
 serviceWeb:
   https:
     enabled: false
@@ -43,12 +43,23 @@ serviceDhcp:
   enabled: false
 
 persistentVolumeClaim:
-  enabled: true
-  storageClass: longhorn
+  enabled: false
+#  storageClass: longhorn
 
-maxUnavailable: 0
+maxUnavailable: 1
+
+# enables cloudflare tunnel sidecar container
+# and sets upstream dns in pihole to leverage it
+doh:
+  enabled: true
+  pullPolicy: Always
+  envVars: {
+    DOH_UPSTREAM: "https://1.1.1.1/dns-query"
+  }
 
 dnsmasq:
+  customSettings:
+    - except-interface=nonexisting
   customDnsEntries:
     - address=/pihole.billv.ca/${data.kubernetes_service_v1.traefik.status.0.load_balancer.0.ingress.0.ip}
     - address=/auth.billv.ca/${data.kubernetes_service_v1.traefik.status.0.load_balancer.0.ingress.0.ip}
@@ -137,9 +148,9 @@ resource "kubernetes_manifest" "ingressroute" {
         "middlewares" = [{
           "name" = "authentik"
           "namespace" = "pihole-system"
-        },{
-          "name" = "add-admin"
-          "namespace" = "pihole-system"
+        # },{
+        #   "name" = "add-admin"
+        #   "namespace" = "pihole-system"
         }]
         "services" = [{
           "kind" = "Service"

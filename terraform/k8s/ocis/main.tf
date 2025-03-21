@@ -129,7 +129,7 @@ resource "kubernetes_stateful_set_v1" "ocis" {
       spec {
         init_container {
           name = "init-chown"
-          command = ["/bin/sh", "-c", "cp /etc/ocis-config/proxy.yaml /etc/ocis/proxy.yaml && chown -R 1000:1000 /etc/ocis && chown -R 1000:1000 /var/lib/ocis"]
+          command = ["/bin/sh", "-c", "if [ ! -f \"/etc/ocis/proxy.yaml\" ]; then cp /etc/ocis-config/proxy.yaml /etc/ocis/proxy.yaml && chown -R 1000:1000 /etc/ocis && chown -R 1000:1000 /var/lib/ocis; fi"]
           image = "busybox:stable"
           image_pull_policy = "IfNotPresent"
           security_context {
@@ -157,7 +157,7 @@ resource "kubernetes_stateful_set_v1" "ocis" {
         }
         container {
           name = "ocis"
-          image = "owncloud/ocis:7.0"
+          image = "owncloud/ocis:7.1"
           command = ["/bin/bash", "-c", "ocis init || true; ocis server"]
           image_pull_policy = "Always"
           security_context {

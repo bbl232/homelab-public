@@ -43,6 +43,12 @@ variable "client_secret_special" {
   description = "Set to false to disable special characters in the client secret. (Optional)"
 }
 
+variable "access_token_validity" {
+  type = string
+  default = "minutes=10"
+  description = "Access token validity period. (Optional)"
+}
+
 variable "client_type" {
   type = string
   default = "confidential"

@@ -69,7 +69,7 @@ resource "kubernetes_stateful_set_v1" "meshcentral" {
       spec {
         container {
           name = "meshcentral"
-          image = "typhonragewind/meshcentral:1.1.38"
+          image = "typhonragewind/meshcentral:1.1.42"
           image_pull_policy = "Always"
           volume_mount {
             name = "meshcentral-data"

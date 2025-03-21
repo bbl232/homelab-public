@@ -155,6 +155,7 @@ module "ocis-desktop" {
   app_launch_url = "blank://blank"
   client_id = "xdXOt13JKxym1B1QcEncf2XDkLAexMBFwiT9j6EfhhHFJhs2KM9jbjTmf8JBXE69"
   client_secret = "UBntmLjC2yYCeHwsyj73Uwo9TAaecAetRwMw0xYcvNL9yRdLSUi0hUAHfvCHFeFh"
+  access_token_validity = "days=30"
   oauth_scopes = [
     "goauthentik.io/providers/oauth2/scope-email",
     "goauthentik.io/providers/oauth2/scope-openid",
@@ -221,7 +222,7 @@ module "pihole" {
   source = "./modules/forwardauth_bundle"
   app_name = "Pi Hole"
   app_slug = "pihole"
-  app_external_host = "https://pihole.billv.ca"
+  app_external_host = "https://pihole.billv.ca/admin/"
   app_namespace = "pihole-system"
   app_icon = "https://upload.wikimedia.org/wikipedia/commons/0/00/Pi-hole_Logo.png?20180925041558"
   outpost_name = local.traefik_outpost_name

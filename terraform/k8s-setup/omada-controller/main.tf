@@ -64,7 +64,7 @@ resource "kubernetes_stateful_set_v1" "omada" {
         host_network = true
         container {
           name = "omada-controller"
-          image = "mbentley/omada-controller:5.14"
+          image = "mbentley/omada-controller:5.15"
           image_pull_policy = "Always"
           volume_mount {
             name = "omada-data"

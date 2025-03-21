@@ -2,11 +2,11 @@ terraform {
   required_providers {
     authentik = {
       source = "goauthentik/authentik"
-      version = "2024.10.2"
+      version = "2024.12.1"
     }
     kubernetes = {
       source = "hashicorp/kubernetes"
-      version = "2.33.0"
+      version = "2.36.0"
     }
   }
 }

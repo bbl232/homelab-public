@@ -2,11 +2,11 @@ terraform {
   required_providers {
     authentik = {
       source = "goauthentik/authentik"
-      version = "2024.10.2"
+      version = "2024.12.1"
     }
     random = {
       source = "hashicorp/random"
-      version = "3.6.3"
+      version = "3.7.1"
     }
   }
 }
@@ -51,6 +51,7 @@ resource "authentik_provider_oauth2" "app" {
   property_mappings = data.authentik_property_mapping_provider_scope.scope.ids
   allowed_redirect_uris = var.allowed_redirect_uris
   client_type = var.client_type
+  access_token_validity = var.access_token_validity
 }
 
 resource "authentik_application" "app" {

@@ -37,7 +37,7 @@ variable "certificate_name" {
 
 variable "app_group_attributes" {
   type = string
-  default = ""
+  default = "{\"type\":\"app_user_group\"}"
   description = "Group attributes"
 }
 
