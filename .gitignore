@@ -2,3 +2,5 @@
 *.tfstate
 *.terraform/
 terraform/k8s/inputs.tfvars.json
+*.tfvars
+*.tfvars.json
